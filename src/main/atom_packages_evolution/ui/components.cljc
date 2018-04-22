@@ -6,13 +6,13 @@
 (defsc AtomPackage [this {:keys [db/id package/name package/downloads package/stargazers] :as props}]
   {:query [:db/id :package/name :package/downloads :package/stargazers]
    :ident [:atom-packages/by-id :db/id]}
-  (dom/div #js {:key (str id)}
+  (dom/div #js {}
     (dom/div #js {} name)
     (dom/div #js {} downloads)
     (dom/div #js {} stargazers)
     (dom/hr #js {})))
 
-(def ui-atom-package (prim/factory AtomPackage))
+(def ui-atom-package (prim/factory AtomPackage {:keyfn :db/id}))
 
 (defsc AtomPackagesList [this {:keys [packages-list/items] :as props}]
   {:query [{:packages-list/items (prim/get-query AtomPackage)}]}
