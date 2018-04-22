@@ -3,13 +3,21 @@
     [fulcro.client.primitives :as prim :refer [defsc]]
     #?(:cljs [fulcro.client.dom :as dom] :clj [fulcro.client.dom-server :as dom])))
 
-;; A good place to put reusable components
-(defsc PlaceholderImage [this {:keys [w h label]}]
-  (let [label (or label (str w "x" h))]
-    (dom/svg #js {:width w :height h}
-      (dom/rect #js {:width w :height h :style #js {:fill        "rgb(200,200,200)"
-                                                    :strokeWidth 2
-                                                    :stroke      "black"}})
-      (dom/text #js {:textAnchor "middle" :x (/ w 2) :y (/ h 2)} label))))
+(defsc AtomPackage [this {:keys [db/id package/name package/downloads package/stargazers] :as props}]
+  {:query [:db/id :package/name :package/downloads :package/stargazers]
+   :ident [:atom-packages/by-id :db/id]}
+  (dom/div #js {:key (str id)}
+    (dom/div #js {} name)
+    (dom/div #js {} downloads)
+    (dom/div #js {} stargazers)
+    (dom/hr #js {})))
 
-(def ui-placeholder (prim/factory PlaceholderImage))
+(def ui-atom-package (prim/factory AtomPackage))
+
+(defsc AtomPackagesList [this {:keys [packages-list/items] :as props}]
+  {:query [{:packages-list/items (prim/get-query AtomPackage)}]}
+  (dom/div #js {}
+    (dom/h1 #js {} "List of packages")
+    (mapv ui-atom-package items)))
+
+(def ui-atom-packages-list (prim/factory AtomPackagesList))
