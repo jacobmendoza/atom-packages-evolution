@@ -21,5 +21,14 @@
                                :downloads :package/downloads
                                :stargazers_count :package/stargazers}) rows)))
 
+(defn get-id-by-package-name [db package-name]
+  (:id (first (jdbc/query db ["SELECT id FROM packages WHERE package_name = ?" package-name]))))
+
 (defn insert-package [db package-name]
-  (jdbc/execute! db ["INSERT INTO Packages (package_name) VALUES (?)" package-name]))
+  (jdbc/execute! db ["INSERT INTO packages (package_name) VALUES (?)" package-name]))
+
+(defn insert-package-statistics [db package-id downloads stargazers]
+  (jdbc/execute! db ["INSERT INTO package_statistics (package_id, date_time, downloads, stargazers_count) VALUES (?, NOW(), ?, ?)" package-id downloads stargazers]))
+
+(defn insert-package-version [db package-id version]
+  (jdbc/execute! db ["INSERT INTO package_versions (package_id, date_time, version) VALUES (?, NOW(), ?)" package-id version]))
