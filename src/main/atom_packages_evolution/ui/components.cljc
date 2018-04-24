@@ -3,13 +3,14 @@
     [fulcro.client.primitives :as prim :refer [defsc]]
     #?(:cljs [fulcro.client.dom :as dom] :clj [fulcro.client.dom-server :as dom])))
 
-(defsc AtomPackage [this {:keys [db/id package/name package/downloads package/stargazers] :as props}]
-  {:query [:db/id :package/name :package/downloads :package/stargazers]
+(defsc AtomPackage [this {:keys [db/id package/name package/downloads package/stargazers package/increase-ratio] :as props}]
+  {:query [:db/id :package/name :package/downloads :package/stargazers :package/increase-ratio]
    :ident [:atom-packages/by-id :db/id]}
   (dom/div #js {}
     (dom/div #js {} name)
     (dom/div #js {} downloads)
     (dom/div #js {} stargazers)
+    (dom/div #js {} increase-ratio)
     (dom/hr #js {})))
 
 (def ui-atom-package (prim/factory AtomPackage {:keyfn :db/id}))

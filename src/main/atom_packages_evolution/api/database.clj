@@ -9,17 +9,21 @@
    ::sql/graph->sql {}
    ::sql/pks        {}})
 
-(def query "SELECT p.id, p.package_name, s.downloads, s.stargazers_count FROM packages p
-            INNER JOIN package_statistics s ON p.id = s.package_id
+(def query "SELECT p.id, p.package_name, s.downloads, s.stargazers_count,
+          		(SELECT ps.downloads FROM package_statistics ps WHERE ps.package_id = p.id ORDER BY ps.id DESC LIMIT 1) /
+          		(SELECT ps.downloads FROM package_statistics ps WHERE ps.package_id = p.id ORDER BY ps.id DESC LIMIT 1, 1) AS ratio
+            FROM packages p INNER JOIN package_statistics s ON p.id = s.package_id
             WHERE s.id = (SELECT id FROM package_statistics ps WHERE ps.package_id = p.id ORDER BY ID DESC LIMIT 1)
-            ORDER BY p.id")
+            ORDER BY ratio DESC")
 
 (defn get-packages [db]
   (let [rows (jdbc/query db [query])]
     (mapv #(set/rename-keys % {:id :db/id
                                :package_name :package/name
                                :downloads :package/downloads
-                               :stargazers_count :package/stargazers}) rows)))
+                               :stargazers_count :package/stargazers
+                               :ratio :package/increase-ratio})
+       rows)))
 
 (defn get-id-by-package-name [db package-name]
   (:id (first (jdbc/query db ["SELECT id FROM packages WHERE package_name = ?" package-name]))))
