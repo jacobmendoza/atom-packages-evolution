@@ -14,6 +14,9 @@
                  [bidi "2.1.3"]
 
                  [proto-repl "0.3.1"]
+                 [fulcrologic/fulcro-sql "0.3.2"]
+                 [org.clojure/java.jdbc "0.7.5"]
+                 [mysql/mysql-connector-java "5.1.41"]
 
                  ; only required if you want to use this for tests
                  [fulcrologic/fulcro-spec "2.1.0-1" :scope "test" :exclusions [fulcrologic/fulcro]]]

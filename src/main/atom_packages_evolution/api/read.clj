@@ -2,9 +2,11 @@
   (:require
     [fulcro.server :refer [defquery-entity defquery-root]]
     [fulcro.i18n :as i18n]
+    [fulcro-sql.core :as sql]
+    [atom-packages-evolution.api.database :as db]
     [taoensso.timbre :as timbre]))
 
 (defquery-root :packages-list/items
-  (value [env params]
-    [{:db/id 1 :package/name "Package 1" :package/downloads 999 :package/stargazers 777}
-     {:db/id 2 :package/name "Package 2" :package/downloads 888 :package/stargazers 555}]))
+   (value [{:keys [databases]} params]
+    (let [db (sql/get-dbspec databases :packages)]
+      (db/get-packages db))))
