@@ -1,1 +1,7 @@
-{:port 8080}
+{:port 8080
+ :sqldbm { :packages { :hikaricp-config "config/connection-pool.properties"
+                       :driver        :mysql
+                       :database-name "atom_packages_prod"
+                       :auto-migrate? true
+                       :create-drop?  false
+                       :migrations    ["classpath:config/migrations"]}}}

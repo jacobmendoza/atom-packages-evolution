@@ -1,7 +1,7 @@
 {:port 1234
  :sqldbm { :packages { :hikaricp-config "config/connection-pool.properties"
-                           :driver        :mysql
-                           :database-name "atom_packages_dev"
-                           :auto-migrate? true
-                           :create-drop?  false
-                           :migrations    ["classpath:config/migrations"]}}}
+                       :driver        :mysql
+                       :database-name "atom_packages_dev"
+                       :auto-migrate? true
+                       :create-drop?  false
+                       :migrations    ["classpath:config/migrations"]}}}
