@@ -3,7 +3,7 @@
             [atom-packages-evolution.crawler.processor :as processor]
             [taoensso.timbre :as timbre]))
 
-(def do-process false)
+(def do-process true)
 (def time-between-crawling 3600000)
 
 (defn- log [message]
