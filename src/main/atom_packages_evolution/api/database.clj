@@ -9,19 +9,23 @@
    ::sql/graph->sql {}
    ::sql/pks        {}})
 
-(def query "SELECT p.id, p.package_name, s.downloads, s.stargazers_count,
+(def query "SELECT p.id, p.package_name, s.downloads, s.stargazers_count, s.date_time,
+            (SELECT ps.downloads FROM package_statistics ps WHERE ps.package_id = p.id ORDER BY ps.id DESC LIMIT 1, 1) AS prev_downloads,
           		(SELECT ps.downloads FROM package_statistics ps WHERE ps.package_id = p.id ORDER BY ps.id DESC LIMIT 1) /
           		(SELECT ps.downloads FROM package_statistics ps WHERE ps.package_id = p.id ORDER BY ps.id DESC LIMIT 1, 1) AS ratio
             FROM packages p INNER JOIN package_statistics s ON p.id = s.package_id
             WHERE s.id = (SELECT id FROM package_statistics ps WHERE ps.package_id = p.id ORDER BY ID DESC LIMIT 1)
-            ORDER BY ratio DESC")
+            HAVING (SELECT COUNT(*) FROM package_statistics pss WHERE pss.package_id = p.id) > 1
+            ORDER BY ratio DESC LIMIT 200")
 
 (defn get-packages [db]
   (let [rows (jdbc/query db [query])]
     (mapv #(set/rename-keys % {:id :db/id
                                :package_name :package/name
                                :downloads :package/downloads
+                               :prev_downloads :package/previous-downloads
                                :stargazers_count :package/stargazers
+                               :date_time :package/update-time
                                :ratio :package/increase-ratio})
        rows)))
 
