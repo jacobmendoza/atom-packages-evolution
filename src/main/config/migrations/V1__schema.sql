@@ -13,7 +13,7 @@ CREATE TABLE package_statistics (
   date_time DATETIME,
   downloads INT UNSIGNED,
   stargazers_count INT UNSIGNED,
-  FOREIGN KEY (package_id) REFERENCES Packages(id)
+  FOREIGN KEY (package_id) REFERENCES packages(id)
 );
 
 CREATE TABLE package_versions (
@@ -21,7 +21,7 @@ CREATE TABLE package_versions (
   package_id INT UNSIGNED,
   date_time DATETIME,
   version TEXT,
-  FOREIGN KEY (package_id) REFERENCES Packages(id)
+  FOREIGN KEY (package_id) REFERENCES packages(id)
 );
 
 INSERT INTO packages (package_name) VALUES ('abcd');
